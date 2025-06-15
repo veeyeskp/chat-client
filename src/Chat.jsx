@@ -1,10 +1,14 @@
 import React, { useState } from "react";
+import "./Chat.css";
 
 const backend = "https://contractgpt.up.railway.app";
 
 function Chat() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState("Today");
+
+  const chatGroups = ["Today", "Yesterday", "This Week", "Last Week", "Month"];
 
   const handleUpload = async (e) => {
     const formData = new FormData();
@@ -20,30 +24,59 @@ function Chat() {
   };
 
   const handleSend = async () => {
+    if (!input.trim()) return;
+
     const res = await fetch(`${backend}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message: input }),
     });
+
     const data = await res.json();
     setMessages([...messages, { user: input, bot: data.response }]);
     setInput("");
   };
 
   return (
-    <div>
-      <input type="file" onChange={handleUpload} />
-      <br /><br />
-      <div style={{ maxHeight: 300, overflowY: "auto" }}>
-        {messages.map((msg, i) => (
-          <div key={i}>
-            <b>You:</b> {msg.user} <br />
-            <b>Bot:</b> {msg.bot}
+    <div className="chat-container">
+      <aside className="chat-sidebar">
+        <h3>Chat History</h3>
+        {chatGroups.map((group) => (
+          <div
+            key={group}
+            className={`chat-group ${selectedGroup === group ? "active" : ""}`}
+            onClick={() => setSelectedGroup(group)}
+          >
+            {group}
           </div>
         ))}
-      </div>
-      <input value={input} onChange={(e) => setInput(e.target.value)} />
-      <button onClick={handleSend}>Send</button>
+      </aside>
+
+      <main className="chat-main">
+        <div className="chat-header">
+          <h2>Chat with PDF</h2>
+          <input type="file" onChange={handleUpload} />
+        </div>
+
+        <div className="chat-window">
+          {messages.map((msg, i) => (
+            <div key={i} className="chat-bubble-group">
+              <div className="chat-bubble user">You: {msg.user}</div>
+              <div className="chat-bubble bot">Bot: {msg.bot}</div>
+            </div>
+          ))}
+        </div>
+
+        <div className="chat-input-box">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && handleSend()}
+            placeholder="Ask something about the PDF..."
+          />
+          <button onClick={handleSend}>Send</button>
+        </div>
+      </main>
     </div>
   );
 }
