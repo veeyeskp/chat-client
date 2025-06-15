@@ -44,7 +44,7 @@ function Chat() {
         {chatGroups.map((group) => (
           <div
             key={group}
-            className={`chat-group ${selectedGroup === group ? "active" : ""}`}
+            className={\`chat-group \${selectedGroup === group ? "active" : ""}\`}
             onClick={() => setSelectedGroup(group)}
           >
             {group}
@@ -54,9 +54,16 @@ function Chat() {
 
       <main className="chat-main">
         <div className="chat-header">
-          <h2>Chat with PDF</h2>
-          <input type="file" onChange={handleUpload} />
+          <div className="chat-header-left">
+            <img src="/logo192.png" alt="Logo" width="28" />
+            Contract Analyzer
+          </div>
+          <div className="chat-header-right">
+            <img src="/profile.png" alt="User" />
+          </div>
         </div>
+
+        <input type="file" onChange={handleUpload} />
 
         <div className="chat-window">
           {messages.map((msg, i) => (
