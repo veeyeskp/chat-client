@@ -44,7 +44,7 @@ function Chat() {
         {chatGroups.map((group) => (
           <div
             key={group}
-            className={\`chat-group \${selectedGroup === group ? "active" : ""}\`}
+            className={`chat-group ${selectedGroup === group ? "active" : ""}`}
             onClick={() => setSelectedGroup(group)}
           >
             {group}
